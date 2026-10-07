@@ -13,6 +13,7 @@ A comprehensive API automation testing framework built with **Playwright** and *
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Running Tests](#running-tests)
+- [Schema Validation](#schema-validation)
 - [Test Cases Documentation](#test-cases-documentation)
 - [Architecture & Components](#architecture--components)
 - [Dependencies](#dependencies)
@@ -214,6 +215,48 @@ npx playwright show-report
 
 ---
 
+## 🧪 Schema Validation
+
+This project validates API responses using `Zod` to confirm the payload structure and data types match the expected contract.
+
+### Schema file
+
+The response schema is defined in `src/schemas/user.schema.ts`:
+
+```typescript
+import { z } from 'zod';
+
+export const UserSchema = z.object({
+    success: z.boolean(),
+    message: z.string(),
+    user: z.object({
+        id: z.number(),
+        name: z.string(),
+        age: z.number(),
+        city: z.string()
+    })
+});
+```
+
+### Validation procedure
+
+1. Send the request and capture the response.
+2. Convert the response body to JSON using `await res.json()`.
+3. Pass the JSON payload to `UserSchema.parse(responseBody)`.
+4. If the response structure or types are incorrect, `Zod` throws an error and the test fails.
+
+Example used in the test suite:
+
+```typescript
+let res = await makeRequest.postRequest(USER_ENDPOINTS.createUser, userData, authToken)
+let responseBody = await res.json();
+UserSchema.parse(responseBody);
+```
+
+This ensures the API response follows the expected schema before the test proceeds.
+
+---
+
 ## 📊 Test Cases Documentation
 
 ### Test Suite: API Tests
@@ -394,37 +437,6 @@ class Logger {
 **Example Output:**
 ```
 [INFO] [API LOGGER] 2024-01-15T10:30:45.123Z Token retrieved and stored.
-```
-
----
-
-### Test Execution Flow
-
-```
-┌─────────────────────────────────────────┐
-│   Test Suite Starts: "API Tests"        │
-└────────────────┬────────────────────────┘
-                 │
-        ┌────────▼─────────┐
-        │  test.beforeAll   │
-        │  - Create context │
-        │  - Get auth token │
-        │  - Initialize API │
-        └────────┬─────────┘
-                 │
-    ┌────────────┼────────────┐
-    │            │            │
-    ▼            ▼            ▼
- GET Test    POST Test    PUT Test    DELETE Test
-    │            │            │            │
-    └────────────┼────────────┘            │
-                 │                         │
-        ┌────────▼─────────┐        ┌──────▼──────┐
-        │   test.afterAll   │        │ Each Test   │
-        │ - Dispose context │        │ - Execute   │
-        │ - Log cleanup     │        │ - Log       │
-        └────────────────┘        │ - Return    │
-                                    └─────────────┘
 ```
 
 ---

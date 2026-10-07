@@ -4,6 +4,7 @@ import AuthUtils from '../src/apiUtils/auth';
 import Logger from '../src/logUtils/log';
 import APIUtils from '../src/apiUtils/requests';
 import { USER_ENDPOINTS } from '../src/endPoints/endpoints';
+import { UserSchema } from '../src/schemas/user.schema';
 
 test.describe('API Tests', () => {
 
@@ -29,12 +30,17 @@ test.describe('API Tests', () => {
 
   test(`"Post API" : to create a new user`, async () => {
     Logger.info(`Running test: ${test.info().title}`);
-    await makeRequest.postRequest(USER_ENDPOINTS.createUser, userData, authToken)
+    let res=await makeRequest.postRequest(USER_ENDPOINTS.createUser, userData, authToken)
+    let responseBody = await res.json();
+    UserSchema.parse(responseBody);
+    
   })
 
   test(`"Put API" : to update a user`, async () => {
     Logger.info(`Running test: ${test.info().title}`);
-    await makeRequest.putRequest(USER_ENDPOINTS.updateUser(1), userData, authToken)
+    let res =await makeRequest.putRequest(USER_ENDPOINTS.updateUser(1), userData, authToken)
+    let responseBody = await res.json();
+    UserSchema.parse(responseBody);
   })
 
   test(`"Delete API" : to delete a user`, async () => {
