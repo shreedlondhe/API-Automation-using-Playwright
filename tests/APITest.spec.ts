@@ -27,8 +27,8 @@ test.describe.serial('API Tests', () => {
   test(`"Get API" : to get all users`, async () => {
     Logger.info(`Running test: ${test.info().title}`);
     let res=await makeRequest.getRequest(USER_ENDPOINTS.getUsers, authToken)
-    let responseBody = await res.json();
-   lastuserId=responseBody.length-1
+    
+  
   })
 
   test(`"Post API" : to create a new user`, async () => {
@@ -36,6 +36,7 @@ test.describe.serial('API Tests', () => {
     let res=await makeRequest.postRequest(USER_ENDPOINTS.createUser, userData, authToken)
     let responseBody = await res.json();
     CreateUserResponseSchema.parse(responseBody);
+     lastuserId=responseBody.user.id
     
   })
 
