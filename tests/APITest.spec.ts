@@ -6,7 +6,7 @@ import APIUtils from '../src/apiUtils/requests';
 import { USER_ENDPOINTS } from '../src/endPoints/endpoints';
 import { CreateUserResponseSchema, DeleteUserResponseSchema } from '../src/schemas/user.schema';
 
-test.describe('API Tests', () => {
+test.describe.serial('API Tests', () => {
 
   let APIrequest: APIRequestContext;
   let authToken: string | undefined;
