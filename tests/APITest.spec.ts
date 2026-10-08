@@ -54,6 +54,8 @@ test.describe.serial('API Tests', () => {
     //await makeRequest.deleteRequest(USER_ENDPOINTS.deleteUser(15), authToken)
     let responseBody = await res.json();
     DeleteUserResponseSchema.parse(responseBody);
+    Logger.info(`User with ID ${lastuserId} deleted successfully.`);
   })
+
 
 })
